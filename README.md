@@ -12,12 +12,10 @@ The extension itself lives in [`amphetamine/`](amphetamine/).
 ## Quick Start
 
 ```bash
-cd amphetamine
-pnpm install
-pnpm run install-local
+make install
 ```
 
-Then restart Raycast and search for **Session Status**.
+Registers the extension with every Raycast app on this Mac (Raycast 2, Raycast 1, Raycast Beta), then search for **Session Status**. `make uninstall` removes it.
 
 ## License
 

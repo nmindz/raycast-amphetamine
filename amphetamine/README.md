@@ -10,14 +10,13 @@ Amphetamine ships no CLI, so this extension drives Amphetamine's official AppleS
 
 ```bash
 git clone git@github.com:nmindz/raycast-amphetamine.git
-cd raycast-amphetamine/amphetamine
-pnpm install
-pnpm run install-local
+cd raycast-amphetamine
+make install
 ```
 
-Then restart Raycast and search for **Session Status**. The first command run triggers a one-time macOS prompt: _"Raycast" wants to control "Amphetamine"_ — click **OK**.
+Then search Raycast for **Session Status**. The first command run triggers a one-time macOS prompt: _"Raycast" wants to control "Amphetamine"_ — click **OK**.
 
-`install-local` builds a dist bundle straight into `~/.config/raycast/extensions/amphetamine/`, which is where Raycast keeps locally-installed extensions. No Raycast account and no dev server required. [INSTALL.md](INSTALL.md) has the full walkthrough.
+`make install` installs dependencies with pnpm when needed, then registers the extension with every Raycast app on this Mac: a short `ray develop` session for Raycast 2 and Raycast Beta, a build into `~/.config/raycast/extensions/amphetamine/` plus a restart for Raycast 1. No Raycast account and no long-running dev server required. [INSTALL.md](INSTALL.md) has the full walkthrough.
 
 ## Commands
 
@@ -73,9 +72,10 @@ Amphetamine's `session time remaining` overloads its return value with sentinels
 
 ```bash
 pnpm install
-pnpm run install-local  # build a dist bundle into Raycast's extensions folder
-pnpm run build          # compile + regenerate raycast-env.d.ts; does NOT install
-pnpm run dev            # hot-reload dev mode; needs `ray login` first
+pnpm run install-local    # register with every Raycast app (what `make install` runs)
+pnpm run uninstall-local  # remove from every Raycast extensions folder
+pnpm run build            # compile + regenerate raycast-env.d.ts; does NOT install
+pnpm run dev              # hot-reload dev mode; needs `ray login` first
 ```
 
 `pnpm run dev` is only for iterating on the code, and it requires a Raycast account — without one it compiles, prints `ready`, and registers nothing without erroring. Plain installs should use `install-local`.

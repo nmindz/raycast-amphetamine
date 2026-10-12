@@ -7,7 +7,7 @@
   "author": "nmindz",
   "categories": ["System", "Productivity"],
   "license": "GPL-3.0-only",
-  "packageManager": "pnpm@11.8.0",
+  "packageManager": "pnpm@12.11.2",
   "commands": [
     {
       "name": "session_status",
@@ -102,8 +102,9 @@
   },
   "scripts": {
     "build": "ray build",
-    "install-local": "ray build -e dist -o \"$HOME/.config/raycast/extensions/amphetamine\"",
     "dev": "ray develop",
+    "install-local": "scripts/raycast-local.sh install",
+    "uninstall-local": "scripts/raycast-local.sh uninstall",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
     "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the `prepublishOnly` script and rerun `npm publish` again.\\nIf you wanted to publish it to the Raycast Store instead, use `pnpm run publish` instead.\\n\\n\" && exit 1",

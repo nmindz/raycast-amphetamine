@@ -1,12 +1,6 @@
 # Install — Amphetamine Raycast Extension
 
-Not on Raycast Store. Install = build a dist bundle into Raycast's local extensions folder:
-
-```
-~/.config/raycast/extensions/amphetamine/
-```
-
-Raycast scans that folder at launch. Store extensions sit there under UUID names; locally-built ones use the extension's `name`. No Raycast account, no login, no dev server, no sideloading hack.
+Not on Raycast Store. `make install` registers the extension with every Raycast app on this Mac: Raycast 2, Raycast 1, and Raycast Beta. No Raycast account, no login, no long-running dev server.
 
 Time: ~2 min.
 
@@ -26,42 +20,42 @@ Time: ~2 min.
 
 ```bash
 git clone git@github.com:nmindz/raycast-amphetamine.git
-cd raycast-amphetamine/amphetamine
+cd raycast-amphetamine
 ```
 
-Extension lives in `amphetamine/`. Run all commands below from there.
+Extension lives in `amphetamine/`. The root `Makefile` delegates there; run `pnpm` commands from `amphetamine/`.
 
-## 3. Deps
+## 3. Install
 
 ```bash
-pnpm install
+make install
 ```
+
+| App                    | Bundle id             | Extensions folder                            | How it registers                                                                   |
+| ---------------------- | --------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Raycast 2 (retail 2.x) | `com.raycast.macos`   | `~/.config/raycast/extensions/amphetamine`   | a short `ray develop` session with the project's CLI                               |
+| Raycast 1              | `com.raycast.macos`   | `~/.config/raycast/extensions/amphetamine`   | `ray build` into the folder, then a restart (Raycast 1 scans it at launch)         |
+| Raycast Beta           | `com.raycast-x.macos` | `~/.config/raycast-x/extensions/amphetamine` | a short `ray develop` session with the Raycast Beta CLI (`@raycast/api@latest-v0`) |
+
+The script reads the version of `com.raycast.macos` to tell Raycast 2 from Raycast 1. Raycast 2 and Raycast Beta only register a local extension through the develop handshake (a `raycast://cli/…` deep link that also launches the app if needed), so they are never restarted; the session stops after the first successful build and the extension stays installed. `make install` runs `pnpm install --frozen-lockfile` first when `node_modules` is missing or older than `pnpm-lock.yaml`. `make restart-raycast` only restarts the running apps.
 
 pnpm runs esbuild's install script — already allow-listed in `pnpm-workspace.yaml`. Hits `ERR_PNPM_IGNORED_BUILDS` → `pnpm approve-builds`, allow `esbuild`.
 
-## 4. Install
-
-```bash
-pnpm run install-local
-```
-
-Wraps `ray build -e dist -o "$HOME/.config/raycast/extensions/amphetamine"`. Compiles, type-checks, writes 7 command bundles + `assets/` + `package.json` into the extensions folder.
+Without `make` (from `amphetamine/`): `pnpm install --frozen-lockfile && pnpm run install-local`.
 
 Success ends with:
 
 ```
-ready  - built extension successfully
+installed into /Users/<you>/.config/raycast/extensions/amphetamine and registered with Raycast <version>
 ```
 
-## 5. Restart Raycast
-
-Raycast indexes the extensions folder at launch. Quit and reopen — new commands appear.
+## 4. Verify
 
 ## 6. Verify
 
 Open Raycast, type `Session Status`. Appears under **Amphetamine**. 7 commands live: Session Status, Start Session, Start Quick Session, End Session, Toggle Session, Manage Preferences, Menu Bar.
 
-## 7. Grant Automation permission
+## 5. Grant Automation permission
 
 Run **Session Status** once. macOS prompts:
 
@@ -73,7 +67,7 @@ Missed or denied → extension reports explicit error, never fails silently. Re-
 
 Newly granted permission not taking effect → quit + reopen Raycast.
 
-## 8. Recommended setup
+## 6. Recommended setup
 
 - **Hotkey on _Toggle Session_** — starts quick session when idle, ends active one otherwise. Best single binding. Raycast → search command → `⌘K` → **Configure Command** → set hotkey.
 - **Menu Bar command** — always-visible countdown. Refreshes every 1 min.
@@ -84,20 +78,16 @@ Newly granted permission not taking effect → quit + reopen Raycast.
 ```bash
 cd raycast-amphetamine
 git pull
-cd amphetamine
-pnpm install
-pnpm run install-local
+make install
 ```
-
-Restart Raycast to pick up the new build.
 
 ## Uninstall
 
 ```bash
-rm -rf ~/.config/raycast/extensions/amphetamine
+make uninstall
 ```
 
-Restart Raycast. Automation permission revokes separately: **System Settings → Privacy & Security → Automation → Raycast → Amphetamine**.
+Removes the build from every Raycast extensions folder and restarts the running apps. Automation permission revokes separately: **System Settings → Privacy & Security → Automation → Raycast → Amphetamine**.
 
 ## Develop (optional)
 
@@ -107,15 +97,15 @@ pnpm run dev
 
 `ray develop` = hot reload + `console.log` streamed to terminal. **Requires a Raycast account**: run `pnpm exec ray login` first. Without it, dev mode compiles, prints `ready`, and registers nothing — no error. Verify auth with `pnpm exec ray profile`.
 
-Dev mode is for iterating on the code. To just install and use the extension, step 4 needs no account.
+Dev mode is for iterating on the code. To just install and use the extension, step 3 needs no account.
 
 ## Troubleshooting
 
 | Symptom                                                                            | Cause                                                                                                           | Fix                                                                                                 |
 | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Commands absent after install                                                      | Raycast indexes at launch.                                                                                      | Quit + reopen Raycast. Then `ls ~/.config/raycast/extensions/amphetamine` — 7 `.js` files expected. |
-| `pnpm run dev` prints `ready`, nothing appears                                     | Raycast CLI not logged in. Dev mode compiles, then silently skips registration.                                 | Use `pnpm run install-local` instead, or `pnpm exec ray login`.                                     |
-| "Raycast is not authorized to control Amphetamine."                                | Apple event `-1743`. Permission missing/denied.                                                                 | Step 7. Toggle already on → off, on, restart Raycast.                                               |
+| Commands absent after install                                                      | Raycast 1 indexes at launch.                                                                                    | `make restart-raycast`. Then `ls ~/.config/raycast/extensions/amphetamine` — 7 `.js` files expected. |
+| `pnpm run dev` prints `ready`, nothing appears                                     | Raycast CLI not logged in. Dev mode compiles, then silently skips registration.                                 | Use `make install` instead, or `pnpm exec ray login`.                                               |
+| "Raycast is not authorized to control Amphetamine."                                | Apple event `-1743`. Permission missing/denied.                                                                 | Step 5. Toggle already on → off, on, restart Raycast.                                               |
 | "Amphetamine is not installed. Install it from the Mac App Store, then try again." | App absent, or installed but never launched.                                                                    | Open `/Applications/Amphetamine.app` once, retry.                                                   |
 | "Amphetamine did not respond within 15s."                                          | Apple event timeout — modal dialog in Amphetamine awaiting input (e.g. Closed-Display Mode's one-time warning). | Front Amphetamine, dismiss dialog, retry.                                                           |
 | "Received an unexpected status response from Amphetamine."                         | Dictionary returned <9 fields → Amphetamine older than 5.                                                       | Update Amphetamine.                                                                                 |
