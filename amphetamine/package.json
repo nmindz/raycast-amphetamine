@@ -6,7 +6,7 @@
   "icon": "extension-icon.png",
   "author": "nmindz",
   "categories": ["System", "Productivity"],
-  "license": "GPL-3.0-only",
+  "license": "MIT",
   "packageManager": "pnpm@12.11.2",
   "commands": [
     {

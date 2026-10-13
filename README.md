@@ -19,4 +19,4 @@ Registers the extension with every Raycast app on this Mac (Raycast 2, Raycast 1
 
 ## License
 
-GNU General Public License v3.0 only — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).

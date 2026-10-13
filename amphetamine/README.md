@@ -80,15 +80,7 @@ pnpm run dev              # hot-reload dev mode; needs `ray login` first
 
 `pnpm run dev` is only for iterating on the code, and it requires a Raycast account — without one it compiles, prints `ready`, and registers nothing without erroring. Plain installs should use `install-local`.
 
-`pnpm exec tsc --noEmit` type-checks without emitting.
-
-> **`pnpm run lint` fails by design.** Raycast's manifest schema pins `license` to the constant `"MIT"`, so `ray lint` rejects this extension's GPL-3.0 license with `9:13 error must be equal to constant`. Nothing else in the toolchain enforces it — `ray build` and `ray develop` both succeed. To lint without the manifest check:
->
-> ```bash
-> pnpm exec eslint src        # code correctness
-> pnpm exec prettier --check src   # formatting
-> pnpm exec tsc --noEmit      # types
-> ```
+`pnpm exec tsc --noEmit` type-checks without emitting. `pnpm run lint` runs Raycast's manifest, ESLint and Prettier checks; it reports a missing `package-lock.json` because this project uses pnpm.
 
 ### Project Layout
 
@@ -120,14 +112,8 @@ The artwork is original — a gradient tile with an energy bolt — and delibera
 
 ## Publishing Notes
 
-The Raycast Store requires extensions to be MIT-licensed. This extension is GPL-3.0, so it is **not** eligible for the Store as licensed — it is meant to be built and installed from source per [INSTALL.md](INSTALL.md).
-
-If you ever do relicense for Store submission, two other things need fixing first: the Store expects an npm `package-lock.json` (this project uses pnpm), and `author` in `package.json` must be your Raycast username.
+Before a Store submission, two things need fixing: the Store expects an npm `package-lock.json` (this project uses pnpm), and `author` in `package.json` must be your Raycast username.
 
 ## License
 
-GNU General Public License v3.0 only — see [LICENSE](../LICENSE).
-
-This program is free software: you can redistribute it and/or modify it under the terms of version 3 of the GNU General Public License as published by the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+MIT — see [LICENSE](../LICENSE).
