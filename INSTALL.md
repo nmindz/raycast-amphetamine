@@ -23,8 +23,6 @@ git clone git@github.com:nmindz/raycast-amphetamine.git
 cd raycast-amphetamine
 ```
 
-Extension lives in `amphetamine/`. The root `Makefile` delegates there; run `pnpm` commands from `amphetamine/`.
-
 ## 3. Install
 
 ```bash
@@ -41,7 +39,7 @@ The script reads the version of `com.raycast.macos` to tell Raycast 2 from Rayca
 
 pnpm runs esbuild's install script — already allow-listed in `pnpm-workspace.yaml`. Hits `ERR_PNPM_IGNORED_BUILDS` → `pnpm approve-builds`, allow `esbuild`.
 
-Without `make` (from `amphetamine/`): `pnpm install --frozen-lockfile && pnpm run install-local`.
+Without `make` (from the project root): `pnpm install --frozen-lockfile && pnpm run install-local`.
 
 Success ends with:
 
